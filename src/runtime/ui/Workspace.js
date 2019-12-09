@@ -18,7 +18,7 @@ const Workspace = {
 
   init(app, layout) {
     const self = new PIXI.Container();
-    const background = initBackground(self, layout, 0xff00000);
+    initBackground(self, layout, 0xff00000);
     return self;
   },
 

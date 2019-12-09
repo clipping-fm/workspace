@@ -11,7 +11,7 @@ const Controls = {
 
   init(layout) {
     const self = new PIXI.Container();
-    const background = initBackground(self, layout);
+    initBackground(self, layout);
 
     const playButton = makeTriangle(
       0, 
