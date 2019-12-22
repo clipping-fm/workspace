@@ -174,6 +174,7 @@ const Controls = {
   },
 
   draw(self, layout) {
+    if (!self) return;
     if (layout) drawBackground(self, layout);
     return self;
   }

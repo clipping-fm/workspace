@@ -11,9 +11,9 @@ const Events = {
       };
     }
   },
-  trigger(eventName) {
+  trigger(eventName, ...args) {
     if (Events.bound[eventName]) {
-      Events.bound[eventName].callbacks.forEach(c => c());
+      Events.bound[eventName].callbacks.forEach(c => c(...args));
     }
   }
 };

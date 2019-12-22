@@ -10,8 +10,8 @@ export default (xPos, yPos, width, color) => {
   triangle.x = xPos;
   triangle.y = yPos;
 
-  triangle.beginFill(0xDE3249, 1);
-  triangle.lineStyle(0, 0xDE3249, 1);
+  triangle.beginFill(color, 1);
+  triangle.lineStyle(0, color, 1);
 
   triangle.moveTo(0, triangleHeight);
   triangle.lineTo(triangleWidth, triangleHalfway); 

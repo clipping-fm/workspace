@@ -14,29 +14,26 @@ import Minimap from 'runtime/ui/Minimap';
 import Transport from 'runtime/playback/Transport';
 import Metronome from 'runtime/playback/Metronome';
 
-// Tracks
-// Multiple Timesignatures, tempos etc
-//import Zelda from 'mocks/projects/zelda';
-import TheWish from 'mocks/projects/theWish';
+import WebletonTheme from 'mocks/projects/webletonTheme';
 
 const Runtime = {
   currentProject: null,
 
   loadProject(rawProject) {
-    const tracksWithNotes = rawProject.tracks.filter(track => track.notes.length);
-    const endOfProjectMs = tracksWithNotes.reduce((acc, track) => {
-      const lastNote = track.notes[track.notes.length - 1];
-      const trackEndsAt = (lastNote.time * 1000 + lastNote.duration * 1000);
-      if (trackEndsAt > acc) {
-        return trackEndsAt;
-      }
-      return acc;
-    }, 0);
+    let endsAtMs = 0;
+    rawProject.tracks.forEach(track => {
+      track.parts.forEach(part => {
+        const lastNote = part.notes[part.notes.length - 1];
+        const partDurationMs = (lastNote.time * 1000 + lastNote.duration * 1000);
 
-    Runtime.currentProject = {
-      raw: rawProject,
-      endsAtMs: endOfProjectMs
-    };
+        part.instances.forEach(instance => {
+          const partEndsAtMs = instance.time * 1000 + partDurationMs;
+          if (partEndsAtMs > endsAtMs) endsAtMs = partEndsAtMs;
+        });
+      });
+    });
+
+    Runtime.currentProject = { raw: rawProject, endsAtMs };
 
     Transport.loadProject(Runtime.currentProject);
     LayoutManager.draw(UIRegistry.app);
@@ -67,6 +64,10 @@ const Runtime = {
     });
     Events.on('intent.RECORD', () => {
     });
+    Events.on('intent.SCRUB', (percentage) => {
+      const scrubToMs = Workspace.viewportWidthMs * percentage + Workspace.viewportLeftPositionMs;
+      Transport.scrubTo(scrubToMs);
+    });
     Events.on('intent.ZOOM_IN', () => {
       Workspace.zoom(UIRegistry.workspace, true);
       Minimap.draw(UIRegistry.minimap);
@@ -90,7 +91,7 @@ const Runtime = {
     Runtime.draw();
 
     // MOCK
-    Runtime.loadProject(TheWish);
+    Runtime.loadProject(WebletonTheme);
   },
 
   tick(/*delta*/) {

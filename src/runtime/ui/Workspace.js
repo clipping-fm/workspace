@@ -4,12 +4,17 @@ import {
   drawBackground, 
   getBackground 
 } from 'runtime/ui/common/hasBackground';
+import GlobalConstants from 'runtime/ui/common/GlobalConstants';
 
 import times from 'runtime/utils/times';
 import remap from 'runtime/utils/remap';
 
 import Runtime from 'runtime';
 import Transport from 'runtime/playback/Transport';
+
+const Constants = {
+  TRACK_HEADER_HEIGHT: 20
+};
 
 const Workspace = {
   viewportLeftPositionMs: 0,
@@ -41,16 +46,16 @@ const Workspace = {
     }
   },
 
-  makeGridLines(self) {
-    self.children.filter(c => c.name === 'gridLine').map(c => self.removeChild(c));
+  makeGridLines(workspaceInner) {
+    workspaceInner.children.filter(c => c.name === 'gridLine').map(c => workspaceInner.removeChild(c));
     // TODO: Major bars should be darker
-    times(self.width/Workspace.widthOfOneBarPx, i => {
+    times(Math.max(workspaceInner.width, workspaceInner.parent.width)/Workspace.widthOfOneBarPx, i => {
       const gridLine = new PIXI.Graphics()
         .beginFill(0x444444, 1)
-        .drawRect(i * Workspace.widthOfOneBarPx, 0, 1, self.height)
+        .drawRect(i * Workspace.widthOfOneBarPx, 0, 1, Math.max(workspaceInner.height, workspaceInner.parent.height))
         .endFill();
       gridLine.name = 'gridLine';
-      self.addChild(gridLine);
+      workspaceInner.addChild(gridLine);
     });
   },
 
@@ -58,7 +63,7 @@ const Workspace = {
     workspaceInner.removeChild(workspaceInner.getChildByName('progressBar'));
     const progressBar = new PIXI.Graphics()
       .beginFill(0xffffff, 1)
-      .drawRect(0, 0, 1, workspaceInner.height)
+      .drawRect(0, 0, 1, Math.max(workspaceInner.height, workspaceInner.parent.height))
       .endFill();
     progressBar.name = 'progressBar';
     // TODO
@@ -89,69 +94,80 @@ const Workspace = {
 
     // Make them
     if (Runtime.currentProject) {
-      const tracks = 
-        Runtime.currentProject.raw.tracks.filter(track => track.notes.length);
-      tracks.forEach(t => {
-        Workspace.makeTrack(workspaceInner, t, (tracks.indexOf(t) + 1));
+      Runtime.currentProject.raw.tracks.forEach(track => {
+        const trackContainer = new PIXI.Graphics()
+          .beginFill(0x444444, 1)
+          .drawRect(0, 0, 0, GlobalConstants.EXPANDED_TRACK_HEIGHT)
+          .endFill();
+        trackContainer.name = 'track';
+
+        track.parts.forEach(part => {
+
+          part.instances.forEach(instance => {
+            const lastNote = part.notes[part.notes.length - 1];
+            const endOfPartMs = (lastNote.time * 1000 + lastNote.duration * 1000);
+            const partWidthPx = endOfPartMs / Workspace.pxToMs;
+
+            const partContainer = new PIXI.Graphics()
+              .beginFill(0x444444, 1)
+              .drawRect(0, 0, partWidthPx, trackContainer.height)
+              .endFill();
+            partContainer.name = 'part';
+
+            const partHeader = new PIXI.Graphics()
+              .beginFill(0xffffff, 1)
+              .drawRect(0, 0, partWidthPx, Constants.TRACK_HEADER_HEIGHT)
+              .endFill();
+            partHeader.name = 'partHeader';
+            partContainer.addChild(partHeader);
+
+            const noteRange = part.notes.reduce((acc, n) => {
+              if (acc.highest === null && acc.lowest === null) {
+                return { highest: n.midi, lowest: n.midi };
+              };
+              const newAcc = { ...acc };
+              if (n.midi > acc.highest) newAcc.highest = n.midi;
+              if (n.midi < acc.lowest) newAcc.lowest = n.midi;
+              return newAcc;
+            }, { highest: null, lowest: null });
+
+            const rangeClicks = noteRange.highest - noteRange.lowest;
+
+            // TODO: handle largest and smallest note heights
+            let noteHeight = Math.floor((partContainer.height - partHeader.height)/rangeClicks);
+
+            part.notes.forEach(n => {
+              const position = remap(n.midi, noteRange.lowest, noteRange.highest, rangeClicks, 0);
+              const note = new PIXI.Graphics()
+                .beginFill(0xff0000, 1)
+                .drawRect(
+                  (n.time * 1000)/Workspace.pxToMs, 
+                  partContainer.y + (position * noteHeight) + partHeader.height,
+                  (n.duration * 1000)/Workspace.pxToMs, 
+                  noteHeight
+                )
+                .endFill();
+              note.name = 'note';
+              partContainer.addChild(note);
+            });
+
+            partContainer.x = instance.time * 1000 / Workspace.pxToMs;
+            trackContainer.addChild(partContainer);
+          });
+        });
+
+        const runningHeight = 
+          workspaceInner.children
+            .filter(c => c.name === 'track')
+            .reduce((totalHeight, track) => {
+              return totalHeight + track.height
+            }, 0);
+        trackContainer.y = runningHeight;
+        workspaceInner.addChild(trackContainer);
       });
     }
 
     return workspaceInner;
-  },
-
-  makeTrack(workspaceInner, track, i) {
-    const lastNote = track.notes[track.notes.length - 1];
-    const endOfTrackMs = (lastNote.time * 1000 + lastNote.duration * 1000);
-    const trackWidthPx = endOfTrackMs / Workspace.pxToMs;
-
-    const noteRange = track.notes.reduce((acc, n) => {
-      if (acc.highest === null && acc.lowest === null) {
-        return { highest: n.midi, lowest: n.midi };
-      };
-      const newAcc = { ...acc };
-      if (n.midi > acc.highest) newAcc.highest = n.midi;
-      if (n.midi < acc.lowest) newAcc.lowest = n.midi;
-      return newAcc;
-    }, { highest: null, lowest: null });
-
-    const rangeClicks = noteRange.highest - noteRange.lowest;
-    const smallestNoteHeight = 1;
-    const smallestTrackHeight = 140;
-    const minimumTrackHeight = smallestNoteHeight * rangeClicks;
-    let noteHeight, trackHeight;
-    if (minimumTrackHeight <= smallestTrackHeight) {
-      trackHeight = smallestTrackHeight; 
-      noteHeight = (Math.floor(smallestTrackHeight / rangeClicks)); 
-    } else {
-      trackHeight = minimumTrackHeight; 
-      noteHeight = smallestNoteHeight;
-    }
-
-    trackHeight = (rangeClicks + 1) * noteHeight;
-
-    const trackContainer = new PIXI.Graphics()
-      .beginFill(0x444444, 1)
-      .drawRect(0, 0, trackWidthPx, trackHeight)
-      .endFill();
-    trackContainer.name = 'track';
-
-    track.notes.forEach(n => {
-      const position = remap(n.midi, noteRange.lowest, noteRange.highest, rangeClicks, 0);
-      const note = new PIXI.Graphics()
-        .beginFill(0xff0000, 1)
-        .drawRect(
-          (n.time * 1000)/Workspace.pxToMs, 
-          trackContainer.y + (position * noteHeight),
-          (n.duration * 1000)/Workspace.pxToMs, 
-          noteHeight
-        )
-        .endFill();
-      note.name = 'note';
-      trackContainer.addChild(note);
-    });
-
-    trackContainer.y = 220 * i;
-    workspaceInner.addChild(trackContainer);
   },
 
   zoom(self, zoomIn = true) {

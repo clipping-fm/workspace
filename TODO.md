@@ -1,0 +1,8 @@
+- Figure out why minimap is out of sync
+- Figure out croppable (& repeatable) parts (maskable in UI?)
+- Wire Mixer into Tone.Mixer
+- Apply greys and get some style going
+- Setup Master Track
+- Make Workspace scrollable
+- Suppport control changes
+- Build out the part editor (& concept of "focus")

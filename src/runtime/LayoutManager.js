@@ -4,6 +4,8 @@ import Workspace from 'runtime/ui/Workspace';
 import Minimap from 'runtime/ui/Minimap';
 import Context from 'runtime/ui/Context';
 import Library from 'runtime/ui/Library';
+import Scrub from 'runtime/ui/Scrub';
+import Mixer from 'runtime/ui/Mixer';
 import Controls from 'runtime/ui/Controls';
 
 const LayoutManager = {
@@ -19,8 +21,6 @@ const LayoutManager = {
       width: app.screen.width,
       height: Controls.Constants.HEIGHT
     };
-    UIRegistry.main = Controls.init(ControlsLayout);
-    app.stage.addChild(UIRegistry.main);
 
     /* Context is the bottom bar */
     const ContextLayout = { 
@@ -29,9 +29,6 @@ const LayoutManager = {
       width: app.screen.width,
       height: Context.Constants.HEIGHT
     };
-
-    UIRegistry.context = Context.init(ContextLayout);
-    app.stage.addChild(UIRegistry.context);
 
     /* Library is the left bar */
     const LibraryLayout = { 
@@ -49,9 +46,7 @@ const LayoutManager = {
       )
     };
     
-    UIRegistry.library = Library.init(LibraryLayout);
-    app.stage.addChild(UIRegistry.library);
-
+    /* Minimap is the left bar */
     const MinimapLayout = {
       x: LibraryLayout.width + LayoutManager.Constants.padding,
       y: ControlsLayout.height + LayoutManager.Constants.padding,
@@ -62,12 +57,9 @@ const LayoutManager = {
       ),
       height: Minimap.Constants.HEIGHT
     };
-    UIRegistry.minimap = Minimap.init(app, MinimapLayout);
-    app.stage.addChild(UIRegistry.minimap);
 
-    // TODO: Scrub Bar
-  
-    const WorkspaceLayout = {
+    /* Scrub is the left bar */
+    const ScrubLayout = {
       x: LibraryLayout.width + LayoutManager.Constants.padding,
       y: (
         ControlsLayout.height + 
@@ -80,6 +72,19 @@ const LayoutManager = {
         LibraryLayout.width -
         LayoutManager.Constants.padding
       ),
+      height: Scrub.Constants.HEIGHT
+    };
+
+    /* Mixer is the left bar */
+    const MixerLayout = {
+      x: LibraryLayout.width + LayoutManager.Constants.padding,
+      y: (
+        ControlsLayout.height + 
+        LayoutManager.Constants.padding +
+        MinimapLayout.height + 
+        LayoutManager.Constants.padding
+      ),
+      width: Mixer.Constants.WIDTH,
       height: (
         app.screen.height -
         ControlsLayout.height - 
@@ -90,6 +95,57 @@ const LayoutManager = {
         ContextLayout.height
       )
     };
+
+    /* Workspace is the left bar */
+    const WorkspaceLayout = {
+      x: (
+        LibraryLayout.width + 
+        LayoutManager.Constants.padding + 
+        MixerLayout.width +
+        LayoutManager.Constants.padding
+      ),
+      y: (
+        ControlsLayout.height + 
+        LayoutManager.Constants.padding +
+        MinimapLayout.height + 
+        LayoutManager.Constants.padding
+      ),
+      width: (
+        app.screen.width -
+        LibraryLayout.width -
+        LayoutManager.Constants.padding - 
+        MixerLayout.width -
+        LayoutManager.Constants.padding
+      ),
+      height: (
+        app.screen.height -
+        ControlsLayout.height - 
+        LayoutManager.Constants.padding -
+        MinimapLayout.height - 
+        LayoutManager.Constants.padding -
+        LayoutManager.Constants.padding -
+        ContextLayout.height
+      )
+    };
+    
+    UIRegistry.main = Controls.init(ControlsLayout);
+    app.stage.addChild(UIRegistry.main);
+
+    UIRegistry.context = Context.init(ContextLayout);
+    app.stage.addChild(UIRegistry.context);
+
+    UIRegistry.library = Library.init(LibraryLayout);
+    app.stage.addChild(UIRegistry.library);
+
+    UIRegistry.minimap = Minimap.init(app, MinimapLayout);
+    app.stage.addChild(UIRegistry.minimap);
+
+    UIRegistry.scrub = Scrub.init(ScrubLayout);
+    app.stage.addChild(UIRegistry.scrub);
+
+    UIRegistry.mixer = Mixer.init(MixerLayout);
+    app.stage.addChild(UIRegistry.mixer);
+
     UIRegistry.workspace = Workspace.init(app, WorkspaceLayout);
     app.stage.addChild(UIRegistry.workspace);
   },
@@ -101,7 +157,6 @@ const LayoutManager = {
       width: app.screen.width,
       height: Controls.Constants.HEIGHT
     };
-    UIRegistry.main = Controls.draw(UIRegistry.main, ControlsLayout);
 
     const ContextLayout = { 
       x: 0,
@@ -109,7 +164,6 @@ const LayoutManager = {
       width: app.screen.width,
       height: Context.Constants.HEIGHT
     };
-    UIRegistry.context = Context.draw(UIRegistry.context, ContextLayout);
 
     const LibraryLayout = { 
       x: 0,
@@ -125,7 +179,6 @@ const LayoutManager = {
         (LayoutManager.Constants.padding * 2)
       )
     };
-    UIRegistry.library = Library.draw(UIRegistry.library, LibraryLayout)
 
     const MinimapLayout = {
       x: LibraryLayout.width + LayoutManager.Constants.padding,
@@ -137,16 +190,65 @@ const LayoutManager = {
       ),
       height: Minimap.Constants.HEIGHT
     };
-    UIRegistry.minimap = Minimap.draw(UIRegistry.minimap, MinimapLayout);
 
-    // TODO: Scrub Bar
+    const ScrubLayout = {
+      x: (
+        LibraryLayout.width + 
+        LayoutManager.Constants.padding + 
+        Mixer.Constants.WIDTH +
+        LayoutManager.Constants.padding
+      ),
+      y: (
+        ControlsLayout.height + 
+        LayoutManager.Constants.padding +
+        MinimapLayout.height + 
+        LayoutManager.Constants.padding
+      ),
+      width: (
+        app.screen.width -
+        LibraryLayout.width -
+        LayoutManager.Constants.padding
+      ),
+      height: Scrub.Constants.HEIGHT
+    };
 
-    const WorkspaceLayout = {
+    const MixerLayout = {
       x: LibraryLayout.width + LayoutManager.Constants.padding,
       y: (
         ControlsLayout.height + 
         LayoutManager.Constants.padding +
         MinimapLayout.height + 
+        LayoutManager.Constants.padding +
+        ScrubLayout.height +
+        LayoutManager.Constants.padding
+      ),
+      width: Mixer.Constants.WIDTH,
+      height: (
+        app.screen.height -
+        ControlsLayout.height - 
+        LayoutManager.Constants.padding -
+        MinimapLayout.height - 
+        LayoutManager.Constants.padding -
+        ScrubLayout.height -
+        LayoutManager.Constants.padding -
+        LayoutManager.Constants.padding -
+        ContextLayout.height
+      )
+    };
+
+    const WorkspaceLayout = {
+      x: (
+        LibraryLayout.width + 
+        LayoutManager.Constants.padding + 
+        MixerLayout.width +
+        LayoutManager.Constants.padding
+      ),
+      y: (
+        ControlsLayout.height + 
+        LayoutManager.Constants.padding +
+        MinimapLayout.height + 
+        LayoutManager.Constants.padding +
+        ScrubLayout.height +
         LayoutManager.Constants.padding
       ),
       width: (
@@ -160,10 +262,19 @@ const LayoutManager = {
         LayoutManager.Constants.padding -
         MinimapLayout.height - 
         LayoutManager.Constants.padding -
+        ScrubLayout.height -
+        LayoutManager.Constants.padding -
         LayoutManager.Constants.padding -
         ContextLayout.height
       )
     };
+   
+    UIRegistry.main = Controls.draw(UIRegistry.main, ControlsLayout);
+    UIRegistry.context = Context.draw(UIRegistry.context, ContextLayout);
+    UIRegistry.library = Library.draw(UIRegistry.library, LibraryLayout)
+    UIRegistry.minimap = Minimap.draw(UIRegistry.minimap, MinimapLayout);
+    UIRegistry.scrub = Scrub.draw(UIRegistry.scrub, ScrubLayout);
+    UIRegistry.mixer = Mixer.draw(UIRegistry.mixer, MixerLayout);
     UIRegistry.workspace = Workspace.draw(UIRegistry.workspace, WorkspaceLayout);
   }
 };

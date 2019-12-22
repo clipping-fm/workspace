@@ -34,13 +34,24 @@ const Transport = {
     Tone.Transport.pause();
   },
 
+  scrubTo(ms) {
+    Tone.Transport.seconds = ms / 1000;
+  },
+
   scheduleRepeat(callback, note) {
     Tone.Transport.scheduleRepeat(callback, note);
   },
 
   loadProject(project) {
+    Tone.Transport.timeSignature = project.raw.header.timeSignatures[0].timeSignature;
+    Tone.Transport.bpm.value = project.raw.header.tempos[0].bpm;
+
     project.raw.tracks.forEach(function(track) {
-      new Tone.Part(playNote, track.notes).start(0);
+      track.parts.forEach(part => {
+        part.instances.forEach(instance => {
+          new Tone.Part(playNote, part.notes).start(instance.time);
+        });
+      });
     });
   },
 

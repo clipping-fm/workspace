@@ -70,25 +70,30 @@ const Minimap = {
   makeTracks(self) {
     self.children.filter(c => c.name === 'track').map(c => self.removeChild(c));
     if (Runtime.currentProject) {
-      const tracks = Runtime.currentProject.raw.tracks.filter(track => track.notes.length);
-      tracks.forEach(t => {
-        const lastNote = t.notes[t.notes.length - 1];
-        const endOfTrackMs = (lastNote.time * 1000 + lastNote.duration * 1000);
+      
+      const tracks = Runtime.currentProject.raw.tracks;
+      tracks.forEach(track => {
+        track.parts.forEach(part => {
+          part.instances.forEach(instance => {
+            const lastNote = part.notes[part.notes.length - 1];
+            const endOfPartMs = (lastNote.time * 1000 + lastNote.duration * 1000);
+            const heightOfTrack = 2;
 
-        const heightOfTrack = 2;
+            const partContainer = new PIXI.Graphics()
+              .beginFill(0xff0000, 1)
+              .drawRect(
+                0,
+                Minimap.Constants.windowHandleWidth + (tracks.indexOf(track) * heightOfTrack),
+                (endOfPartMs / Workspace.projectWidthMs) * self.width,
+                heightOfTrack
+              )
+              .endFill();
+            partContainer.name = 'partContainer';
 
-        const track = new PIXI.Graphics()
-          .beginFill(0xff0000, 1)
-          .drawRect(
-            0,
-            Minimap.Constants.windowHandleWidth + (tracks.indexOf(t) * heightOfTrack),
-            (endOfTrackMs / Workspace.projectWidthMs) * self.width,
-            heightOfTrack
-          )
-          .endFill();
-        track.name = 'track';
-        self.addChild(track);
-
+            partContainer.x = instance.time * 1000 / Workspace.pxToMs;
+            self.addChild(partContainer);
+          });
+        });
       });
     }
   },
@@ -146,6 +151,7 @@ const Minimap = {
   },
 
   draw(self, layout) {
+    if (!self) return;
     if (layout) drawBackground(self, layout);
     Minimap.makeTracks(self);
     Minimap.makeProgressBar(self);

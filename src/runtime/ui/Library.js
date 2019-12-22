@@ -13,6 +13,7 @@ const Library = {
   },
 
   draw(self, layout) {
+    if (!self) return;
     drawBackground(self, layout);
     return self;
   }
