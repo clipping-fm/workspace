@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { initBackground, drawBackground } from 'runtime/ui/common/hasBackground';
 import Events from 'runtime/Events';
+import { PIXI } from 'pixi.js';
 
 const Scrub = {
   Constants: {

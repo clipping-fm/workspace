@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useDispatch } from 'react-redux';
 import * as PIXI from 'pixi.js';
+import { AppContext as PIXIAppContext } from 'react-pixi-fiber';
 
 import Controls, { ControlsConstants } from 'root/Controls';
 import Context, { ContextConstants } from 'root/Context';
@@ -7,31 +9,34 @@ import Library, { LibraryConstants } from 'root/Library';
 import Minimap, { MinimapConstants } from 'root/Minimap';
 import Scrub, { ScrubConstants } from 'root/Scrub';
 import Mixer, { MixerConstants } from 'root/Mixer';
+import Workspace from 'root/Workspace';
+import { setWorkspaceLayout } from 'state/actions/workspaceActions';
 
-const GlobalConstants = {
+import { Layout } from 'types';
+
+export const GlobalConstants = {
   PADDING: 4
 };
 
-type RootProps = {
-  app: PIXI.Application
-};
+export default React.memo(function() {
+  const app: PIXI.Application = useContext(PIXIAppContext);
+  const dispatch = useDispatch();
 
-export default React.memo(({ app }: RootProps) => {
-  const ControlsLayout = {
+  const ControlsLayout: Layout = {
     x: 0,
     y: 0,
     width: app.screen.width,
     height: ControlsConstants.HEIGHT
   };
 
-  const ContextLayout = { 
+  const ContextLayout: Layout = { 
     x: 0,
     y: app.screen.height - ContextConstants.HEIGHT,
     width: app.screen.width,
     height: ContextConstants.HEIGHT
   };
 
-  const LibraryLayout = { 
+  const LibraryLayout: Layout = { 
     x: 0,
     y: (
       ControlsLayout.height + 
@@ -46,18 +51,25 @@ export default React.memo(({ app }: RootProps) => {
     )
   };
 
-  const MinimapLayout = {
-    x: LibraryLayout.width + GlobalConstants.PADDING,
+  const MinimapLayout: Layout = {
+    x: (
+      LibraryLayout.width + 
+      GlobalConstants.PADDING + 
+      MixerConstants.WIDTH +
+      GlobalConstants.PADDING
+    ),
     y: ControlsLayout.height + GlobalConstants.PADDING,
     width: (
       app.screen.width -
       LibraryLayout.width -
+      GlobalConstants.PADDING -
+      MixerConstants.WIDTH -
       GlobalConstants.PADDING
     ),
     height: MinimapConstants.HEIGHT
   };
 
-  const ScrubLayout = {
+  const ScrubLayout: Layout = {
     x: (
       LibraryLayout.width + 
       GlobalConstants.PADDING + 
@@ -73,12 +85,14 @@ export default React.memo(({ app }: RootProps) => {
     width: (
       app.screen.width -
       LibraryLayout.width -
+      GlobalConstants.PADDING -
+      MixerConstants.WIDTH -
       GlobalConstants.PADDING
     ),
     height: ScrubConstants.HEIGHT
   };
 
-  const MixerLayout = {
+  const MixerLayout: Layout = {
     x: LibraryLayout.width + GlobalConstants.PADDING,
     y: (
       ControlsLayout.height + 
@@ -102,6 +116,42 @@ export default React.memo(({ app }: RootProps) => {
     )
   };
 
+  const WorkspaceLayout: Layout = {
+    x: (
+      LibraryLayout.width + 
+      GlobalConstants.PADDING +
+      MixerLayout.width +
+      GlobalConstants.PADDING
+    ),
+    y: (
+      ControlsLayout.height + 
+      GlobalConstants.PADDING +
+      MinimapLayout.height + 
+      GlobalConstants.PADDING +
+      ScrubLayout.height +
+      GlobalConstants.PADDING
+    ),
+    width: (
+      app.screen.width -
+      LibraryLayout.width -
+      GlobalConstants.PADDING -
+      MixerLayout.width -
+      GlobalConstants.PADDING
+    ),
+    height: (
+      app.screen.height -
+      ControlsLayout.height - 
+      GlobalConstants.PADDING -
+      MinimapLayout.height - 
+      GlobalConstants.PADDING -
+      ScrubLayout.height -
+      GlobalConstants.PADDING -
+      GlobalConstants.PADDING -
+      ContextLayout.height
+    )
+  };
+
+  dispatch(setWorkspaceLayout(WorkspaceLayout));
   return (
     <>
       <Controls layout={ControlsLayout} />
@@ -110,6 +160,7 @@ export default React.memo(({ app }: RootProps) => {
       <Minimap layout={MinimapLayout} />
       <Scrub layout={ScrubLayout} />
       <Mixer layout={MixerLayout} />
+      <Workspace layout={WorkspaceLayout} />
     </>
   );
 });

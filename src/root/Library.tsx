@@ -3,11 +3,17 @@ import { Container } from 'react-pixi-fiber';
 import Rectangle from 'shapes/Rectangle';
 import Colors from 'constants/Colors';
 
-export const ScrubConstants = {
-  HEIGHT: 10
+import { Layout } from 'types';
+
+export const LibraryConstants = {
+  WIDTH: 140
 };
 
-export default React.memo(({layout}) => (
+type Props = {
+  layout: Layout 
+};
+
+export default React.memo(({ layout }: Props) => (
   <Container>
     <Rectangle
       x={layout.x}

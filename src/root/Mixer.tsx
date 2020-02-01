@@ -3,11 +3,17 @@ import { Container } from 'react-pixi-fiber';
 import Rectangle from 'shapes/Rectangle';
 import Colors from 'constants/Colors';
 
-export const ControlsConstants = {
-  HEIGHT: 40
+import { Layout } from 'types';
+
+export const MixerConstants = {
+  WIDTH: 100
 };
 
-export default React.memo(({layout}) => (
+type Props = {
+  layout: Layout 
+};
+
+export default React.memo(({ layout }: Props) => (
   <Container>
     <Rectangle
       x={layout.x}

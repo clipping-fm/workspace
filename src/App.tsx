@@ -1,21 +1,21 @@
 import React from 'react';
-import { AppContext, Stage } from 'react-pixi-fiber';
-import Colors from 'constants/Colors';
+import { useSelector, useDispatch } from 'react-redux'
+
+import { initializeApplication } from 'state/actions/applicationActions';
 import Root from 'root';
+import { GlobalState, Status } from 'types';
 
-const STAGE_OPTIONS = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-  antialias: true,
-  resolution: (window.devicePixelRatio || 1),
-  autoResize: true,
-  backgroundColor: Colors.dark
-};
+export default React.memo(function() {
+  const applicationStatus: Status = useSelector((state: GlobalState) => state.status.initializeApplication);
+  if (applicationStatus === Status.IDLE) useDispatch()(initializeApplication());
 
-export default React.memo(() => (
-  <Stage options={STAGE_OPTIONS}>
-    <AppContext.Consumer>
-      {app => <Root app={app} />}
-    </AppContext.Consumer>
-  </Stage>
-));
+  switch (applicationStatus) {
+    case Status.IDLE:
+    case Status.PENDING:
+      return null;
+    case Status.REJECTED:
+      return null;
+    case Status.FULFILLED:
+      return <Root />;
+  }
+});
