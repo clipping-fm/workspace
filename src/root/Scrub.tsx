@@ -7,7 +7,10 @@ import * as PIXI from 'pixi.js';
 import { scrub } from 'state/actions/transportActions';
 
 import { Layout } from 'types';
-import workspaceLayoutAttrsSelector from 'state/selectors/workspaceLayoutAttrs'; 
+import { 
+  viewportWidthSecondsSelector,
+  viewportLeftPositionSecondsSelector 
+} from 'state/selectors/workspaceLayoutAttrs'; 
 
 export const ScrubConstants = {
   HEIGHT: 10
@@ -19,10 +22,9 @@ type Props = {
 
 export default React.memo(({ layout }: Props) => {
   const dispatch = useDispatch();
-  const { 
-    viewportWidthSeconds,
-    viewportLeftPositionSeconds,
-  } = useSelector(workspaceLayoutAttrsSelector);
+
+  const viewportWidthSeconds: number = useSelector(viewportWidthSecondsSelector);
+  const viewportLeftPositionSeconds: number = useSelector(viewportLeftPositionSecondsSelector);
 
   function didClickScrub(this: PIXI.Graphics, event: PIXI.interaction.InteractionEvent) {
     const xPos = event.data.getLocalPosition(this).x
@@ -42,9 +44,8 @@ export default React.memo(({ layout }: Props) => {
         width={layout.width} 
         height={layout.height} 
         fill={Colors.mid}
-        onClick={didClickScrub}
-      >
-      </Rectangle>
+        click={didClickScrub}
+      />
     </Container>
   );
 });

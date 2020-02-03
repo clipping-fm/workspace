@@ -5,7 +5,7 @@ export default CustomPIXIComponent({
   customDisplayObject: props => new PIXI.Graphics(),
 
   customApplyProps: function(instance, oldProps, newProps) {
-    const { x, y, width, fill, alpha, onClick } = newProps;
+    const { x, y, width, fill, alpha, click } = newProps;
     instance.clear();
 
     const triangleWidth = width;
@@ -23,10 +23,10 @@ export default CustomPIXIComponent({
     instance.y = y;
     instance.endFill();
 
-    if (onClick) {
+    if (click) {
       instance.interactive = true;
       instance.buttonMode = true;
-      instance.on('pointerdown', newProps.onClick);
+      instance.on('pointerdown', newProps.click);
     }
   }
 }, 'Triangle');

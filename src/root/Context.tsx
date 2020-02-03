@@ -59,7 +59,7 @@ export default React.memo(({ layout }: Props) => {
         width={100} 
         height={100} 
         fill={Colors.light}
-        onClick={() => dispatch(
+        click={() => dispatch(
           setViewportLeftPosition(5)
         )}
       />

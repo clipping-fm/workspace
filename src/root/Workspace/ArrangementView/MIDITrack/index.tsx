@@ -10,7 +10,7 @@ import { updateProjectAttribute, ProjectAttributeUpdater } from 'state/actions/p
 
 import { Layout } from 'types';
 import { MIDITrackAST, MIDIPartAST, MIDIPartInstanceAST, MIDINoteAST } from 'lib/Project';
-import workspaceLayoutAttrsSelector from 'state/selectors/workspaceLayoutAttrs'; 
+import { pxToSecondsSelector, measureWidthSecondsSelector } from 'state/selectors/workspaceLayoutAttrs'; 
 
 type Props = {
   midiTrackAST: MIDITrackAST,
@@ -31,12 +31,13 @@ function largestNoteHeightForRangeClicks(rangeClicks: number): number {
 export default React.memo(({ midiTrackAST, workspaceLayout }: Props): JSX.Element => {
   const dispatch = useDispatch();
 
-  const { measureWidthSeconds, pxToSeconds } = useSelector(workspaceLayoutAttrsSelector);
+  const measureWidthSeconds: number = useSelector(measureWidthSecondsSelector);
+  const pxToSeconds: number = useSelector(pxToSecondsSelector);
 
   const partElements: JSX.Element[] = midiTrackAST.midiParts.reduce((
     acc: JSX.Element[], midiPartAST: MIDIPartAST
   ) => {
-    console.log(` render <MIDITrack id={${midiTrackAST.id}} />`);
+    console.log(`~~> render <MIDITrack id={${midiTrackAST.id}} />`);
 
     // Loop through and find the best note height for the part by checking
     // the rangeClicks can fit in the given height. In the case of a 0.5
@@ -172,7 +173,10 @@ export default React.memo(({ midiTrackAST, workspaceLayout }: Props): JSX.Elemen
         <Container
           key={midiPartInstanceAST.id}
           x={midiPartInstanceAST.startsAt / pxToSeconds}
-          y={System.ui.trackHeight * midiTrackAST.index}
+          y={0}
+          interactive
+          cursor="pointer"
+          click={() => console.log('clicked instance')}
         >
           <Rectangle
             x={0}

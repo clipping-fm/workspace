@@ -46,13 +46,21 @@ export default {
       velocity: 0.1889763779527559
     },
   },
+
   midiPartInstances: {
     '81b94208-2081-4c6c-a325-9dc96a91e3e9': {
       id: '81b94208-2081-4c6c-a325-9dc96a91e3e9',
       midiPartId: 'e75570b0-6caf-4a44-ac7b-bd4fa87a6a57',
-      time: 0.575,
+      time: 0.3,
       offset: 0,
-      duration: 1.125
+      duration: 0.5
+    },
+    '81b94208-2081-4c6c-a325-9dc96a91e3e8': {
+      id: '81b94208-2081-4c6c-a325-9dc96a91e3e8',
+      midiPartId: 'e75570b0-6caf-4a44-ac7b-bd4fa87a6a57',
+      time: 1.2,
+      offset: 0,
+      duration: 0.5
     },
     '81af2b43-6a1a-4b10-8261-3b6cde669bdc': {
       id: '81af2b43-6a1a-4b10-8261-3b6cde669bdc',
@@ -83,14 +91,16 @@ export default {
       duration: "1m"
     },
   },
+
   midiParts: {
     'e75570b0-6caf-4a44-ac7b-bd4fa87a6a57': {
       id: 'e75570b0-6caf-4a44-ac7b-bd4fa87a6a57',
       trackId: 'f1414a7e-e554-413d-b918-72afa85daf12',
       name: 'Intro',
-      duration: 1.125,
+      duration: 0.5,
       midiPartInstanceIds: [
-        '81b94208-2081-4c6c-a325-9dc96a91e3e9', 
+        '81b94208-2081-4c6c-a325-9dc96a91e3e9',
+        '81b94208-2081-4c6c-a325-9dc96a91e3e8',
         '81af2b43-6a1a-4b10-8261-3b6cde669bdc'
       ],
       midiNoteIds: [
@@ -115,6 +125,7 @@ export default {
       ]
     }
   },
+
   tracks: {
     'f1414a7e-e554-413d-b918-72afa85daf12': {
       id: 'f1414a7e-e554-413d-b918-72afa85daf12',
@@ -126,7 +137,7 @@ export default {
     'bc3916f0-df2a-499e-b2f5-e4f3d0b8009b': {
       id: 'bc3916f0-df2a-499e-b2f5-e4f3d0b8009b',
       index: 1,
-      name: 'Bass Line',
+      name: 'Melody',
       type: 'midi',
       midiPartIds: ['eede59d1-dd72-4d01-84b6-528e11e2f7f5']
     }

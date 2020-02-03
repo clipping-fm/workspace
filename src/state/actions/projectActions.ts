@@ -1,6 +1,10 @@
 import { Dispatch } from 'redux';
 import { ProjectState } from 'state/reducers/project';
 import Project, { ProjectAST } from 'lib/Project';
+import { GlobalState, MIDIPartInstance, MIDIPart } from 'types';
+import uuid from 'utils/makeUUID';
+import { measureWidthSecondsSelector } from 'state/selectors/workspaceLayoutAttrs';
+import Transport from 'lib/Transport';
 
 export const loadProject = (project: ProjectState) => {
   return (dispatch: Dispatch) => {
@@ -62,4 +66,75 @@ export const updateProjectAttribute = (attrUpdater: ProjectAttributeUpdater) => 
       } 
     });
   }
+};
+
+export const createMIDIPartInstance = (startsAtSeconds: number, trackId: string) => {
+  return (dispatch: Dispatch, getState: Function) => {
+    const state: GlobalState = getState();
+
+    // Find the ideal window for a clean full measure
+    const measureWidthSeconds: number = measureWidthSecondsSelector(state);
+    const closestBarStartsAtSeconds: number = Math.floor(startsAtSeconds / measureWidthSeconds) * measureWidthSeconds;
+    const closestBarEndsAtSeconds: number = closestBarStartsAtSeconds + measureWidthSeconds;
+
+    // Check if there's instances that collide with that ideal window
+    const { tracks, midiParts, midiPartInstances } = state.project;
+    const track = tracks[trackId];
+    const trackMIDIParts: MIDIPart[] = track.midiPartIds.map((id: string) => midiParts[id]);
+    const trackMIDIPartInstances: MIDIPartInstance[] = trackMIDIParts.reduce((acc: MIDIPartInstance[], trackMIDIPart: MIDIPart) => {
+      return [
+        ...acc, 
+        ...trackMIDIPart.midiPartInstanceIds.map((id: string) => midiPartInstances[id])
+      ];
+    }, []);
+
+    // TODO: Use Selector AST for this to save all the seconds conversions?
+    const window: [number, number] = trackMIDIPartInstances.reduce((acc, trackMIDIPartInstance: MIDIPartInstance) => {
+      const instanceStartTimeSeconds = Transport.toSeconds(trackMIDIPartInstance.time);
+      const instanceEndTimeSeconds = instanceStartTimeSeconds + Transport.toSeconds(trackMIDIPartInstance.duration);
+      if (instanceStartTimeSeconds >= acc[1]) return acc;
+      if (instanceEndTimeSeconds <= acc[0]) return acc;
+      if (instanceStartTimeSeconds > startsAtSeconds) acc[1] = instanceStartTimeSeconds;
+      if (instanceEndTimeSeconds < startsAtSeconds) acc[0] = instanceEndTimeSeconds;
+      return acc;
+    }, [closestBarStartsAtSeconds, closestBarEndsAtSeconds]);
+
+    const duration = Transport.toBarsBeatsSixteenths(window[1] - window[0]);
+
+    const newMIDIPart: MIDIPart = {
+      id: uuid(),
+      trackId,
+      name: "Untitled",
+      duration,
+      midiPartInstanceIds: [],
+      midiNoteIds: []
+    };
+    const newMIDIPartInstance: MIDIPartInstance = {
+      id: uuid(),
+      midiPartId: newMIDIPart.id,
+      time: Transport.toBarsBeatsSixteenths(window[0]),
+      offset: 0,
+      duration
+    };
+    newMIDIPart.midiPartInstanceIds = [newMIDIPartInstance.id];
+    const newTrack = { ...track, midiPartIds: [...track.midiPartIds, newMIDIPart.id] };
+
+    const newProjectRevision = { ...state.project };
+    newProjectRevision.midiParts[newMIDIPart.id] = newMIDIPart;
+    newProjectRevision.midiPartInstances[newMIDIPartInstance.id] = newMIDIPartInstance;
+    newProjectRevision.tracks[track.id] = newTrack;
+
+    // Tell everyone
+    const project: ProjectState = Project.enforceIntegrity(newProjectRevision);
+    const projectAST: ProjectAST = Project.loadProject(project);
+
+    return dispatch({
+      type: 'UPDATE_PROJECT_ATTRIBUTE',
+      payload: { 
+        project,
+        projectAST
+      } 
+    });
+
+  };
 };

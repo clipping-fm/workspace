@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { memo, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import * as PIXI from 'pixi.js';
 import { AppContext as PIXIAppContext } from 'react-pixi-fiber';
@@ -18,7 +18,7 @@ export const GlobalConstants = {
   PADDING: 4
 };
 
-export default React.memo(function() {
+const Root = () => {
   const app: PIXI.Application = useContext(PIXIAppContext);
   const dispatch = useDispatch();
 
@@ -152,6 +152,7 @@ export default React.memo(function() {
   };
 
   dispatch(setWorkspaceLayout(WorkspaceLayout));
+  console.log('render <Root />');
   return (
     <>
       <Controls layout={ControlsLayout} />
@@ -163,4 +164,6 @@ export default React.memo(function() {
       <Workspace layout={WorkspaceLayout} />
     </>
   );
-});
+};
+
+export default memo(Root);

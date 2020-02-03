@@ -33,7 +33,7 @@ export default React.memo(({ layout }: Props) => {
           y={ControlsConstants.HEIGHT/4} 
           fill={Colors.light} 
           width={ControlsConstants.HEIGHT/2} 
-          onClick={() => dispatch(playTransport())}
+          click={() => dispatch(playTransport())}
         />
         <Rectangle
           x={(
@@ -45,7 +45,7 @@ export default React.memo(({ layout }: Props) => {
           height={ControlsConstants.HEIGHT/2}
           width={ControlsConstants.HEIGHT/2}
           fill={Colors.light}
-          onClick={() => dispatch(stopTransport())}
+          click={() => dispatch(stopTransport())}
         />
       </Rectangle>
     </Container>

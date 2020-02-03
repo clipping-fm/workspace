@@ -3,35 +3,59 @@ import { GlobalState } from 'types';
 import { MIDIPartInstance } from 'types';
 import Transport from 'lib/Transport';
 
-export default createSelector(
-  (state: GlobalState) => state.transport.bpm,
+export const pxToSecondsSelector = createSelector(
   (state: GlobalState) => state.workspace.layout.width,
   (state: GlobalState) => state.workspace.viewportWidthSeconds,
-  (state: GlobalState) => state.workspace.viewportLeftPositionSeconds,
-  (state: GlobalState) => state.project.midiPartInstances,
-  (
-    bpm: number, 
-    viewportWidthPx: number, 
-    viewportWidthSeconds: number, 
-    viewportLeftPositionSeconds: number, 
-    midiPartInstances: { [id: string]: MIDIPartInstance }
-  ) => {
-    const pxToSeconds: number = viewportWidthSeconds / viewportWidthPx;
-    const beatEverySeconds: number = 60 / bpm;
-    const measureWidthSeconds: number =  beatEverySeconds * 4;
+  (viewportWidthPx: number, viewportWidthSeconds: number) => {
+    return viewportWidthSeconds / viewportWidthPx;
+  }
+);
 
+export const viewportWidthSecondsSelector = createSelector(
+  (state: GlobalState) => state.workspace.viewportWidthSeconds,
+  (viewportWidthSeconds: number) => {
+    return viewportWidthSeconds;
+  }
+);
+
+export const projectEndsAtSecondsSelector = createSelector(
+  (state: GlobalState) => state.project.midiPartInstances,
+  (midiPartInstances: { [id: string]: MIDIPartInstance }) => {
     const projectEndsAtSeconds = Object.values(midiPartInstances).reduce((acc: number, midiPartInstance: MIDIPartInstance) => {
       const instanceEndsAt = Transport.toSeconds(midiPartInstance.time) + Transport.toSeconds(midiPartInstance.duration);
       return instanceEndsAt > acc ? instanceEndsAt : acc;
     }, 0);
+    return projectEndsAtSeconds;
+  }
+);
 
-    return {
-      pxToSeconds,
-      measureWidthSeconds,
-      viewportWidthSeconds,
-      viewportLeftPositionSeconds,
-      projectEndsAtSeconds,
-      measureWidthPx: measureWidthSeconds / pxToSeconds
-    }
+export const projectEndsAtPxSelector = createSelector(
+  pxToSecondsSelector,
+  projectEndsAtSecondsSelector,
+  (pxToSeconds: number, projectEndsAtSeconds: number) => {
+    return projectEndsAtSeconds / pxToSeconds;
+  }
+);
+
+export const viewportLeftPositionSecondsSelector = createSelector(
+  (state: GlobalState) => state.workspace.viewportLeftPositionSeconds,
+  (viewportLeftPositionSeconds: number) => {
+    return viewportLeftPositionSeconds;
+  }
+);
+
+export const measureWidthSecondsSelector = createSelector(
+  (state: GlobalState) => state.transport.bpm,
+  (bpm: number) => {
+    const beatEverySeconds: number = 60 / bpm;
+    return beatEverySeconds * 4; // TODO: Time Signatures
+  }
+);
+
+export const measureWidthPxSelector = createSelector(
+  pxToSecondsSelector,
+  measureWidthSecondsSelector,
+  (pxToSeconds: number, measureWidthSeconds: number) => {
+    return measureWidthSeconds / pxToSeconds;
   }
 );

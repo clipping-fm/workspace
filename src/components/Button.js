@@ -13,7 +13,7 @@ export default CustomPIXIComponent({
 
     instance.interactive = true;
     instance.buttonMode = true;
-    instance.on('pointerdown', newProps.onClick);
+    instance.on('pointerdown', newProps.click);
 
     instance.drawRect(0, 0, width, height);
     instance.x = x;
