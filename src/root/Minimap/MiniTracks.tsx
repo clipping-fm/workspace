@@ -49,10 +49,11 @@ const MiniTracks = ({
         }, []);
 
         return (
-          <Container x={0} y={trackHeight * track.index}>
+          <Container key={track.id} x={0} y={trackHeight * track.index}>
             {trackMIDIPartInstances.map((trackMIDIPartInstance: MIDIPartInstance) => {
               return (
                 <Rectangle
+                  key={trackMIDIPartInstance.id}
                   x={(Transport.toSeconds(trackMIDIPartInstance.time) / maxWidthSeconds) * widthPx}
                   y={0}
                   width={(Transport.toSeconds(trackMIDIPartInstance.duration) / maxWidthSeconds) * widthPx}
