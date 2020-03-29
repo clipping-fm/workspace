@@ -20,35 +20,42 @@ type Props = {
   maxMIDIValue: number;
 };
 
+type LoopedMIDINote = {
+  loopIndex: number,
+  relativeTime: number;
+  clampedDuration: number;
+  midiNote: MIDINote;
+};
+
 const makeLoopedMIDINotes = (
   midiNotes: MIDINote[],
   midiPartInstanceDuration: number,
   midiPartDuration: number,
   midiPartInstanceOffset: number,
-): MIDINote[] => {
+): LoopedMIDINote[] => {
   return Array.from(
     Array(Math.ceil(midiPartInstanceDuration / midiPartDuration)).keys()
-  ).reduce((acc: MIDINote[], i: number) => {
-    const loopedMIDINoteSet: MIDINote[] =
+  ).reduce((acc: LoopedMIDINote[], i: number) => {
+    const loopedMIDINoteSet: LoopedMIDINote[] =
       midiNotes.map((midiNote: MIDINote) => {
-        const time = 
+        const relativeTime = 
           normalizeTime(midiNote.time) - midiPartInstanceOffset + (i * midiPartDuration);
-        let duration = normalizeTime(midiNote.duration);
-        const relativeEndTime = time + duration;
+        let clampedDuration = normalizeTime(midiNote.duration);
+        const relativeEndTime = relativeTime + clampedDuration;
 
         /* Ensure the final note doesn't exceed the clip's duration */
         if (relativeEndTime > midiPartDuration) {
-          duration = (duration - (relativeEndTime - midiPartDuration)); 
+          clampedDuration = (clampedDuration - (relativeEndTime - midiPartDuration)); 
         }
 
         return {
-          ...midiNote,
-          id: `${i}__${midiNote.id}`,
-          time,
-          duration
+          loopIndex: i,
+          relativeTime,
+          clampedDuration,
+          midiNote
         };
-      }).filter(midiNote => {
-        return normalizeTime(midiNote.time) >= 0 && normalizeTime(midiNote.time) < midiPartDuration;
+      }).filter(loopedMIDINote => {
+        return loopedMIDINote.relativeTime >= 0 && loopedMIDINote.relativeTime < midiPartDuration;
       });
 
     return [...acc, ...loopedMIDINoteSet];
@@ -75,13 +82,13 @@ const MIDINotes = ({
     midiPartInstanceDuration,
     midiPartDuration,
     midiPartInstanceOffset,
-  ).map(loopedMIDINote => {
+  ).map((loopedMIDINote: LoopedMIDINote) => {
     return (
       <Rectangle
-        key={loopedMIDINote.id}
-        x={normalizeTime(loopedMIDINote.time) / pxToSeconds}
-        y={(maxMIDIValue - loopedMIDINote.midi) * noteHeight}
-        width={normalizeTime(loopedMIDINote.duration) / pxToSeconds}
+        key={`${loopedMIDINote.loopIndex}__${loopedMIDINote.midiNote.id}`}
+        x={loopedMIDINote.relativeTime / pxToSeconds}
+        y={(maxMIDIValue - loopedMIDINote.midiNote.midi) * noteHeight}
+        width={normalizeTime(loopedMIDINote.clampedDuration) / pxToSeconds}
         height={noteHeight}
         fill={Colors.highlight}
       />
