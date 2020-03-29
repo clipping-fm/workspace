@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { Container } from 'react-pixi-fiber';
 import Rectangle from "shapes/Rectangle";
 import { ProjectState } from 'state/reducers/project';
-import { GlobalState, MIDIPart, MIDIPartInstance, MIDINote } from "types";
+import { GlobalState, MIDIPart, MIDIPartInstance, MIDINote, LoopedMIDINote } from "types";
 import { 
   pxToSecondsSelector
 } from 'state/selectors/workspaceLayoutAttrs'; 
 import Colors from "constants/Colors";
-import normalizeTime from 'utils/normalizeTime';
+import makeLoopedMIDINotes from 'utils/makeLoopedMIDINotes';
 
 type Props = {
   midiPartInstanceId: string;
@@ -18,48 +18,6 @@ type Props = {
   midiPartInstanceOffset: number;
   midiPartDuration: number;
   maxMIDIValue: number;
-};
-
-type LoopedMIDINote = {
-  loopIndex: number,
-  relativeTime: number;
-  clampedDuration: number;
-  midiNote: MIDINote;
-};
-
-const makeLoopedMIDINotes = (
-  midiNotes: MIDINote[],
-  midiPartInstanceDuration: number,
-  midiPartDuration: number,
-  midiPartInstanceOffset: number,
-): LoopedMIDINote[] => {
-  return Array.from(
-    Array(Math.ceil(midiPartInstanceDuration / midiPartDuration)).keys()
-  ).reduce((acc: LoopedMIDINote[], i: number) => {
-    const loopedMIDINoteSet: LoopedMIDINote[] =
-      midiNotes.map((midiNote: MIDINote) => {
-        const relativeTime = 
-          normalizeTime(midiNote.time) - midiPartInstanceOffset + (i * midiPartDuration);
-        let clampedDuration = normalizeTime(midiNote.duration);
-        const relativeEndTime = relativeTime + clampedDuration;
-
-        /* Ensure the final note doesn't exceed the clip's duration */
-        if (relativeEndTime > midiPartDuration) {
-          clampedDuration = (clampedDuration - (relativeEndTime - midiPartDuration)); 
-        }
-
-        return {
-          loopIndex: i,
-          relativeTime,
-          clampedDuration,
-          midiNote
-        };
-      }).filter(loopedMIDINote => {
-        return loopedMIDINote.relativeTime >= 0 && loopedMIDINote.relativeTime < midiPartDuration;
-      });
-
-    return [...acc, ...loopedMIDINoteSet];
-  }, []);
 };
 
 const MIDINotes = ({
@@ -88,7 +46,7 @@ const MIDINotes = ({
         key={`${loopedMIDINote.loopIndex}__${loopedMIDINote.midiNote.id}`}
         x={loopedMIDINote.relativeTime / pxToSeconds}
         y={(maxMIDIValue - loopedMIDINote.midiNote.midi) * noteHeight}
-        width={normalizeTime(loopedMIDINote.clampedDuration) / pxToSeconds}
+        width={loopedMIDINote.clampedDuration / pxToSeconds}
         height={noteHeight}
         fill={Colors.highlight}
       />
