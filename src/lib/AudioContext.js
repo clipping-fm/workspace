@@ -23,7 +23,7 @@ const AudioContext = {
   },
 
   // TODO: Clear old ones
-  loadMIDIPart(midiPartInstanceId, midiNotes, startAt, endAt, offset) {
+  loadMIDIPartInstance(midiPartInstanceId, midiNotes, startAt, endAt, offset) {
     return;
 
     /* Load into Tone.js */

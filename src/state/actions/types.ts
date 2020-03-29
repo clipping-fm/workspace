@@ -1,5 +1,4 @@
 import { ProjectState } from 'state/reducers/project';
-import { ProjectAST } from 'lib/Project';
 import { Layout } from 'types';
 
 interface InitializeApplicationPendingAction {
@@ -23,16 +22,14 @@ export type InitializeApplicationAction =
 interface LoadProjectAction {
   type: 'LOAD_PROJECT';
   payload: {
-    project: ProjectState,
-    projectAST: ProjectAST
+    project: ProjectState
   }
 }
 
 interface UpdateProjectAttributeAction {
   type: 'UPDATE_PROJECT_ATTRIBUTE';
   payload: {
-    project: ProjectState,
-    projectAST: ProjectAST
+    project: ProjectState
   }
 };
 

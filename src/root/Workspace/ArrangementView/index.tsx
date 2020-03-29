@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container } from 'react-pixi-fiber';
 
-import MIDITrack from './MIDITrack';
+import MIDITrackComponent from './MIDITrack';
 import GridLines from './GridLines';
 import ProgressBar from './ProgressBar';
 import Rectangle from 'shapes/Rectangle';
@@ -10,14 +10,13 @@ import Rectangle from 'shapes/Rectangle';
 import System from 'constants/System';
 import Colors from 'constants/Colors';
 
-import { ProjectAST, MIDITrackAST } from 'lib/Project';
 import { 
   measureWidthPxSelector,
   projectEndsAtPxSelector,
   pxToSecondsSelector
 } from 'state/selectors/workspaceLayoutAttrs'; 
 import { createMIDIPartInstance } from 'state/actions/projectActions';
-import { GlobalState, Layout } from 'types';
+import { GlobalState, MIDITrack, Layout } from 'types';
 
 type Props = {
   layout: Layout 
@@ -25,14 +24,15 @@ type Props = {
 
 const ArrangementView = ({ layout }: Props) => {
   const dispatch = useDispatch();
-  const projectAST: ProjectAST = useSelector((state: GlobalState) => state.workspace.projectAST);
+  const midiTracks: MIDITrack[] = 
+    useSelector((state: GlobalState) => Object.values(state.project.tracks));
 
   const measureWidthPx: number = useSelector(measureWidthPxSelector);
   const projectEndsAtPx: number = useSelector(projectEndsAtPxSelector);
   const pxToSeconds: number = useSelector(pxToSecondsSelector);
 
   const totalWidthPx = Math.max(layout.width, projectEndsAtPx);
-  const totalHeightPx = Math.max(layout.height, projectAST.tracks.length * System.ui.trackHeight);
+  const totalHeightPx = Math.max(layout.height, midiTracks.length * System.ui.trackHeight);
 
   console.log('render <ArrangementView />');
   return (
@@ -43,12 +43,12 @@ const ArrangementView = ({ layout }: Props) => {
         measureWidthPx={measureWidthPx}
       />
 
-      {projectAST.tracks.map((midiTrackAST: MIDITrackAST) => {
+      {midiTracks.map((midiTrack: MIDITrack) => {
         return (
           <Container 
-            key={midiTrackAST.id}
+            key={midiTrack.id}
             x={0}
-            y={System.ui.trackHeight * midiTrackAST.index}
+            y={System.ui.trackHeight * midiTrack.index}
           >
             <Rectangle
               x={0}
@@ -60,10 +60,10 @@ const ArrangementView = ({ layout }: Props) => {
               border={{ width: 1, color: Colors.mid }}
               click={function(this: PIXI.Graphics, event: PIXI.interaction.InteractionEvent) {
                 const clickPositionSeconds = event.data.getLocalPosition(this).x * pxToSeconds;
-                dispatch(createMIDIPartInstance(clickPositionSeconds, midiTrackAST.id));
+                dispatch(createMIDIPartInstance(clickPositionSeconds, midiTrack.id));
               }}
             />
-            <MIDITrack midiTrackAST={midiTrackAST} workspaceLayout={layout} />
+            <MIDITrackComponent midiTrackId={midiTrack.id} />
           </Container>
         );
       })}

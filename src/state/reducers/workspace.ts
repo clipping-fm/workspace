@@ -1,12 +1,10 @@
 import { Action } from 'state/actions/types';
-import { ProjectAST } from 'lib/Project';
 import { Layout } from 'types';
 
 export interface WorkspaceState {
   layout: Layout
   viewportWidthSeconds: number,
   viewportLeftPositionSeconds: number,
-  projectAST: ProjectAST
 };
 
 const initialState: WorkspaceState = {
@@ -17,10 +15,7 @@ const initialState: WorkspaceState = {
     width: 1
   },
   viewportWidthSeconds: 30,
-  viewportLeftPositionSeconds: 0,
-  projectAST: {
-    tracks: []
-  }
+  viewportLeftPositionSeconds: 0
 };
 
 export default (
@@ -42,7 +37,6 @@ export default (
     case 'UPDATE_PROJECT_ATTRIBUTE':
       return {
         ...state,
-        projectAST: action.payload.projectAST
       };
     default:
       return state;
