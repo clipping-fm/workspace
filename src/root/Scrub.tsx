@@ -7,32 +7,37 @@ import * as PIXI from 'pixi.js';
 import { scrub } from 'state/actions/transportActions';
 
 import { Layout } from 'types';
-import { 
+import {
   viewportWidthSecondsSelector,
-  viewportLeftPositionSecondsSelector 
-} from 'state/selectors/workspaceLayoutAttrs'; 
+  viewportLeftPositionSecondsSelector,
+} from 'state/selectors/workspaceLayoutAttrs';
 
 export const ScrubConstants = {
-  HEIGHT: 10
+  HEIGHT: 10,
 };
 
 type Props = {
-  layout: Layout 
+  layout: Layout;
 };
 
 export default React.memo(({ layout }: Props) => {
   const dispatch = useDispatch();
 
-  const viewportWidthSeconds: number = useSelector(viewportWidthSecondsSelector);
-  const viewportLeftPositionSeconds: number = useSelector(viewportLeftPositionSecondsSelector);
+  const viewportWidthSeconds: number = useSelector(
+    viewportWidthSecondsSelector
+  );
+  const viewportLeftPositionSeconds: number = useSelector(
+    viewportLeftPositionSecondsSelector
+  );
 
-  function didClickScrub(this: PIXI.Graphics, event: PIXI.interaction.InteractionEvent) {
-    const xPos = event.data.getLocalPosition(this).x
-    const percentage = 
-      xPos === 0 ?
-      0 :
-      xPos / this.width;
-    const scrubToSeconds = (viewportWidthSeconds * percentage) + viewportLeftPositionSeconds;
+  function didClickScrub(
+    this: PIXI.Graphics,
+    event: PIXI.interaction.InteractionEvent
+  ) {
+    const xPos = event.data.getLocalPosition(this).x;
+    const percentage = xPos === 0 ? 0 : xPos / this.width;
+    const scrubToSeconds =
+      viewportWidthSeconds * percentage + viewportLeftPositionSeconds;
     dispatch(scrub(scrubToSeconds));
   }
 
@@ -41,8 +46,8 @@ export default React.memo(({ layout }: Props) => {
       <Rectangle
         x={layout.x}
         y={layout.y}
-        width={layout.width} 
-        height={layout.height} 
+        width={layout.width}
+        height={layout.height}
         fill={Colors.mid}
         click={didClickScrub}
       />

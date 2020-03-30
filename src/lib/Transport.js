@@ -28,5 +28,5 @@ export default {
 
   toSeconds(time) {
     return Tone.Time(time).toSeconds();
-  }
+  },
 };

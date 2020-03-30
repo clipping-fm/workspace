@@ -5,24 +5,29 @@ import ArrangementView from 'root/Workspace/ArrangementView';
 import ScrollableContainer from 'components/ScrollableContainer';
 
 import { Layout } from 'types';
-import { pxToSecondsSelector, viewportLeftPositionSecondsSelector } from 'state/selectors/workspaceLayoutAttrs'; 
+import {
+  pxToSecondsSelector,
+  viewportLeftPositionSecondsSelector,
+} from 'state/selectors/workspaceLayoutAttrs';
 import { setViewportLeftPosition } from 'state/actions/workspaceActions';
 
 type Props = {
-  layout: Layout 
+  layout: Layout;
 };
 
 const Workspace = ({ layout }: Props) => {
   const dispatch = useDispatch();
 
   const pxToSeconds: number = useSelector(pxToSecondsSelector);
-  const viewportLeftPositionSeconds: number = useSelector(viewportLeftPositionSecondsSelector);
+  const viewportLeftPositionSeconds: number = useSelector(
+    viewportLeftPositionSecondsSelector
+  );
 
   // TODO: better typings
   const scrollableContainerRef: any = useRef(null);
   if (scrollableContainerRef && scrollableContainerRef.current) {
     scrollableContainerRef.current.content.moveCorner(
-      viewportLeftPositionSeconds / pxToSeconds, 
+      viewportLeftPositionSeconds / pxToSeconds,
       scrollableContainerRef.current.content.corner.y
     );
   }
@@ -34,14 +39,14 @@ const Workspace = ({ layout }: Props) => {
   console.log('render <Workspace />');
   return (
     <ScrollableContainer
-      width={layout.width} 
+      width={layout.width}
       height={layout.height}
       x={layout.x}
       y={layout.y}
       onMove={onViewportMove}
       ref={scrollableContainerRef}
     >
-      <ArrangementView layout={layout} /> 
+      <ArrangementView layout={layout} />
     </ScrollableContainer>
   );
 };

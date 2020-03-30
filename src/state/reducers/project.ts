@@ -3,24 +3,24 @@ import { Action } from 'state/actions/types';
 
 export interface ProjectState {
   tracks: {
-    [id: string]: MIDITrack
-  },
+    [id: string]: MIDITrack;
+  };
   midiParts: {
-    [id: string]: MIDIPart
-  },
+    [id: string]: MIDIPart;
+  };
   midiPartInstances: {
-    [id: string]: MIDIPartInstance
-  },
+    [id: string]: MIDIPartInstance;
+  };
   midiNotes: {
-    [id: string]: MIDINote 
-  }
-};
+    [id: string]: MIDINote;
+  };
+}
 
 const initialState: ProjectState = {
   tracks: {},
   midiParts: {},
   midiPartInstances: {},
-  midiNotes: {}
+  midiNotes: {},
 };
 
 export default (

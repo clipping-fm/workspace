@@ -7,5 +7,5 @@ export default {
   workspace,
   status,
   project,
-  transport
+  transport,
 };

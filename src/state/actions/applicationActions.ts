@@ -9,7 +9,7 @@ export const initializeApplication = () => {
       payload: new Promise((resolve) => {
         loadProject(dummyProject)(dispatch);
         resolve();
-      })
+      }),
     });
-  }
-}
+  };
+};

@@ -1,16 +1,14 @@
-import React from "react";
+import React from 'react';
 import { useSelector } from 'react-redux';
-import Rectangle from "shapes/Rectangle";
-import Colors from "constants/Colors";
-import System from "constants/System";
-import { 
-  pxToSecondsSelector
-} from 'state/selectors/workspaceLayoutAttrs'; 
+import Rectangle from 'shapes/Rectangle';
+import Colors from 'constants/Colors';
+import System from 'constants/System';
+import { pxToSecondsSelector } from 'state/selectors/workspaceLayoutAttrs';
 
 type Props = {
-  midiPartInstanceDuration: number,
-  midiPartInstanceOffset: number,
-  midiPartDuration: number,
+  midiPartInstanceDuration: number;
+  midiPartInstanceOffset: number;
+  midiPartDuration: number;
 };
 
 const LoopStartIndicators = ({
@@ -22,9 +20,11 @@ const LoopStartIndicators = ({
 
   const loopStartPositions = Array.from(
     Array(Math.ceil(midiPartInstanceDuration / midiPartDuration)).keys()
-  ).map((i: number) => {
-    return ((i * midiPartDuration) - midiPartInstanceOffset) / pxToSeconds;
-  }).filter((lsp: number) => lsp >= 0);
+  )
+    .map((i: number) => {
+      return (i * midiPartDuration - midiPartInstanceOffset) / pxToSeconds;
+    })
+    .filter((lsp: number) => lsp >= 0);
 
   return (
     <>

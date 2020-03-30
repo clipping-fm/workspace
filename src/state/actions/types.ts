@@ -22,30 +22,30 @@ export type InitializeApplicationAction =
 interface LoadProjectAction {
   type: 'LOAD_PROJECT';
   payload: {
-    project: ProjectState
-  }
+    project: ProjectState;
+  };
 }
 
 interface UpdateProjectAttributeAction {
   type: 'UPDATE_PROJECT_ATTRIBUTE';
   payload: {
-    project: ProjectState
-  }
-};
+    project: ProjectState;
+  };
+}
 
 interface SetWorkspaceLayoutAction {
   type: 'SET_WORKSPACE_LAYOUT';
-  payload: Layout
-};
+  payload: Layout;
+}
 
 interface SetViewportLeftPositionAction {
   type: 'SET_VIEWPORT_LEFT_POSITION';
-  payload: number 
-};
+  payload: number;
+}
 
 export type Action =
   | InitializeApplicationAction
   | UpdateProjectAttributeAction
   | LoadProjectAction
   | SetWorkspaceLayoutAction
-  | SetViewportLeftPositionAction; 
+  | SetViewportLeftPositionAction;

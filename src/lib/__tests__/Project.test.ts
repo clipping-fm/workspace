@@ -1,10 +1,7 @@
 import Project from 'lib/Project';
 
-it('loadOrUpdateMIDIPartInstance', () => {
-});
+it('loadOrUpdateMIDIPartInstance', () => {});
 
-it('loadOrUpdateMIDIPart', () => {
-});
+it('loadOrUpdateMIDIPart', () => {});
 
-it('Project.loadProject', () => {
-});
+it('Project.loadProject', () => {});

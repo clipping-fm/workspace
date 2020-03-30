@@ -9,11 +9,11 @@ import { GlobalConstants } from 'root';
 import { playTransport, stopTransport } from 'state/actions/transportActions';
 
 export const ControlsConstants = {
-  HEIGHT: 40
+  HEIGHT: 40,
 };
 
 type Props = {
-  layout: Layout 
+  layout: Layout;
 };
 
 export default React.memo(({ layout }: Props) => {
@@ -24,26 +24,26 @@ export default React.memo(({ layout }: Props) => {
       <Rectangle
         x={layout.x}
         y={layout.y}
-        width={layout.width} 
-        height={layout.height} 
+        width={layout.width}
+        height={layout.height}
         fill={Colors.mid}
       >
-        <Triangle 
-          x={GlobalConstants.PADDING*2} 
-          y={ControlsConstants.HEIGHT/4} 
-          fill={Colors.light} 
-          width={ControlsConstants.HEIGHT/2} 
+        <Triangle
+          x={GlobalConstants.PADDING * 2}
+          y={ControlsConstants.HEIGHT / 4}
+          fill={Colors.light}
+          width={ControlsConstants.HEIGHT / 2}
           click={() => dispatch(playTransport())}
         />
         <Rectangle
-          x={(
-            GlobalConstants.PADDING*2 +
-            ControlsConstants.HEIGHT/2 +
-            GlobalConstants.PADDING*2
-          )}
-          y={ControlsConstants.HEIGHT/4}
-          height={ControlsConstants.HEIGHT/2}
-          width={ControlsConstants.HEIGHT/2}
+          x={
+            GlobalConstants.PADDING * 2 +
+            ControlsConstants.HEIGHT / 2 +
+            GlobalConstants.PADDING * 2
+          }
+          y={ControlsConstants.HEIGHT / 4}
+          height={ControlsConstants.HEIGHT / 2}
+          width={ControlsConstants.HEIGHT / 2}
           fill={Colors.light}
           click={() => dispatch(stopTransport())}
         />

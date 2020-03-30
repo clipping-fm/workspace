@@ -1,11 +1,11 @@
 import { Action } from 'state/actions/types';
 
 export interface TransportState {
-  bpm: number
-};
+  bpm: number;
+}
 
 const initialState: TransportState = {
-  bpm: 120
+  bpm: 120,
 };
 
 export default (

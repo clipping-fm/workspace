@@ -6,17 +6,15 @@ import System from 'constants/System';
 import Colors from 'constants/Colors';
 import {
   updateProjectAttribute,
-  ProjectAttributeUpdater
+  ProjectAttributeUpdater,
 } from 'state/actions/projectActions';
-//import { 
+//import {
 //  pxToSecondsSelector
-//} from 'state/selectors/workspaceLayoutAttrs'; 
+//} from 'state/selectors/workspaceLayoutAttrs';
 
-type Props = {
-};
+type Props = {};
 
-const DragHandle = ({
-}: Props) => {
+const DragHandle = ({}: Props) => {
   //const pxToSeconds: number = useSelector(pxToSecondsSelector);
 
   const dispatch = useDispatch();
@@ -33,20 +31,18 @@ const DragHandle = ({
     attrUpdater: null | ProjectAttributeUpdater;
   };
 
-  const didStartDraggingInstanceStart = function(event: any) {
+  const didStartDraggingInstanceStart = function (event: any) {
     DRAG_DATA = { xOriginal: event.data.global.x, attrUpdater: null };
   };
 
-  const didDragInstanceStart = function(event: any) {
+  const didDragInstanceStart = function (event: any) {
     //if (DRAG_DATA) {
     //  let newWidth = 0;
-
     //  const differenceInSeconds =
     //    (DRAG_DATA.xOriginal - event.data.global.x) * -1 * pxToSeconds;
     //  const gridOffsetSeconds =
     //    midiPartInstanceAST.startsAt % measureWidthSeconds;
     //  const currentlyOnGrid = gridOffsetSeconds === 0;
-
     //  if (currentlyOnGrid) {
     //    if (differenceInSeconds > 0) {
     //      newWidth =
@@ -73,7 +69,6 @@ const DragHandle = ({
     //        fill;
     //    }
     //  }
-
     //  if (newWidth) {
     //    const newDuration = Transport.toBarsBeatsSixteenths(
     //      midiPartInstanceAST.duration - newWidth
@@ -81,13 +76,11 @@ const DragHandle = ({
     //    const newTime = Transport.toBarsBeatsSixteenths(
     //      midiPartInstanceAST.startsAt + newWidth
     //    );
-
     //    let newOffset =
     //      ((newWidth % midiPartDuration) /
     //        midiPartDuration) *
     //        midiPartDuration +
     //      midiPartInstanceAST.offset;
-
     //    if (newOffset === midiPartDuration) {
     //      console.log("ho", newOffset % midiPartDuration);
     //      newOffset = 0;
@@ -96,7 +89,6 @@ const DragHandle = ({
     //    } else if (newOffset < 0) {
     //      console.log("hey", newOffset % midiPartDuration);
     //    }
-
     //    DRAG_DATA.attrUpdater = {
     //      id: midiPartInstanceAST.id,
     //      type: "midiPartInstances",
@@ -118,12 +110,11 @@ const DragHandle = ({
     //  } else {
     //    DRAG_DATA.attrUpdater = null;
     //  }
-
     //  instanceStartVisualizer.current.width = newWidth / pxToSeconds;
     //}
   };
 
-  const didStopDraggingInstanceStart = function() {
+  const didStopDraggingInstanceStart = function () {
     instanceStartVisualizer.current.width = 0;
     if (DRAG_DATA && DRAG_DATA.attrUpdater) {
       onUpdate(DRAG_DATA.attrUpdater);

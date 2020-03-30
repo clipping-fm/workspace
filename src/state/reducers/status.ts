@@ -3,10 +3,10 @@ import { Action } from 'state/actions/types';
 
 export interface StatusState {
   initializeApplication: Status;
-};
+}
 
 const initialState: StatusState = {
-  initializeApplication: Status.IDLE
+  initializeApplication: Status.IDLE,
 };
 
 export default (
