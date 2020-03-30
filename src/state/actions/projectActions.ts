@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { ProjectState } from 'state/reducers/project';
-import Project, { ProjectAST } from 'lib/Project';
+import Project from 'lib/Project';
 import { GlobalState, MIDIPartInstance, MIDIPart } from 'types';
 import uuid from 'utils/makeUUID';
 import { measureWidthSecondsSelector } from 'state/selectors/workspaceLayoutAttrs';
@@ -8,14 +8,10 @@ import Transport from 'lib/Transport';
 
 export const loadProject = (project: ProjectState) => {
   return (dispatch: Dispatch) => {
-    const projectAST: ProjectAST = Project.loadProject(project);
-
+    Project.loadProject(project);
     return dispatch({
       type: 'LOAD_PROJECT',
-      payload: { 
-        project,
-        projectAST
-      } 
+      payload: { project } 
     });
   }
 };
@@ -56,14 +52,11 @@ export const updateProjectAttribute = (attrUpdater: ProjectAttributeUpdater) => 
 
     // Tell everyone
     const project: ProjectState = Project.enforceIntegrity(newProjectRevision);
-    const projectAST: ProjectAST = Project.loadProject(project);
+    Project.loadProject(project);
 
     return dispatch({
       type: 'UPDATE_PROJECT_ATTRIBUTE',
-      payload: { 
-        project,
-        projectAST
-      } 
+      payload: { project } 
     });
   }
 };
@@ -88,7 +81,6 @@ export const createMIDIPartInstance = (startsAtSeconds: number, trackId: string)
       ];
     }, []);
 
-    // TODO: Use Selector AST for this to save all the seconds conversions?
     const window: [number, number] = trackMIDIPartInstances.reduce((acc, trackMIDIPartInstance: MIDIPartInstance) => {
       const instanceStartTimeSeconds = Transport.toSeconds(trackMIDIPartInstance.time);
       const instanceEndTimeSeconds = instanceStartTimeSeconds + Transport.toSeconds(trackMIDIPartInstance.duration);
@@ -126,14 +118,11 @@ export const createMIDIPartInstance = (startsAtSeconds: number, trackId: string)
 
     // Tell everyone
     const project: ProjectState = Project.enforceIntegrity(newProjectRevision);
-    const projectAST: ProjectAST = Project.loadProject(project);
+    Project.loadProject(project);
 
     return dispatch({
       type: 'UPDATE_PROJECT_ATTRIBUTE',
-      payload: { 
-        project,
-        projectAST
-      } 
+      payload: { project } 
     });
 
   };

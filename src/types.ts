@@ -3,6 +3,13 @@ import { StatusState } from 'state/reducers/status';
 import { ProjectState } from 'state/reducers/project';
 import { TransportState } from 'state/reducers/transport';
 
+export type LoopedMIDINote = {
+  loopIndex: number,
+  relativeTime: number;
+  clampedDuration: number;
+  midiNote: MIDINote;
+};
+
 /* The Project Data */
 export type MIDINote = {
   id: string,
