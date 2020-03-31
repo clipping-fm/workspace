@@ -1,25 +1,30 @@
 import Tone from 'tone';
 
 const Cache = {
-  midiPartInstances: {}
+  midiPartInstances: {},
 };
 
 const synth = new Tone.PolySynth(8, Tone.Synth, {
   oscillator: {
-    type: "sine3"
+    type: 'sine3',
   },
   envelope: {
-    attack: .03,
-    decay: .1,
-    sustain: .2,
-    release: .6
-  }
+    attack: 0.03,
+    decay: 0.1,
+    sustain: 0.2,
+    release: 0.6,
+  },
 }).toMaster();
 
 const AudioContext = {
   playMIDINote(time, midiNote) {
     console.log('PLAY', midiNote);
-    synth.triggerAttackRelease(midiNote.name, midiNote.duration, time, midiNote.velocity)
+    synth.triggerAttackRelease(
+      midiNote.name,
+      midiNote.duration,
+      time,
+      midiNote.velocity
+    );
   },
 
   // TODO: Clear old ones
@@ -27,7 +32,7 @@ const AudioContext = {
     return;
 
     /* Load into Tone.js */
-    //Cache.midiPartInstances[midiPartInstanceId] = 
+    //Cache.midiPartInstances[midiPartInstanceId] =
     //  Cache.midiPartInstances[midiPartInstanceId] || [];
 
     //const instance = new Tone.Part(AudioContext.playMIDINote, midiNotes)

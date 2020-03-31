@@ -15,7 +15,7 @@ import { setWorkspaceLayout } from 'state/actions/workspaceActions';
 import { Layout } from 'types';
 
 export const GlobalConstants = {
-  PADDING: 4
+  PADDING: 4,
 };
 
 const Root = () => {
@@ -26,129 +26,114 @@ const Root = () => {
     x: 0,
     y: 0,
     width: app.screen.width,
-    height: ControlsConstants.HEIGHT
+    height: ControlsConstants.HEIGHT,
   };
 
-  const ContextLayout: Layout = { 
+  const ContextLayout: Layout = {
     x: 0,
     y: app.screen.height - ContextConstants.HEIGHT,
     width: app.screen.width,
-    height: ContextConstants.HEIGHT
+    height: ContextConstants.HEIGHT,
   };
 
-  const LibraryLayout: Layout = { 
+  const LibraryLayout: Layout = {
     x: 0,
-    y: (
-      ControlsLayout.height + 
-      GlobalConstants.PADDING
-    ),
+    y: ControlsLayout.height + GlobalConstants.PADDING,
     width: LibraryConstants.WIDTH,
-    height: (
-      app.screen.height - 
-      ControlsLayout.height - 
+    height:
+      app.screen.height -
+      ControlsLayout.height -
       ContextLayout.height -
-      (GlobalConstants.PADDING * 2)
-    )
+      GlobalConstants.PADDING * 2,
   };
 
   const MinimapLayout: Layout = {
-    x: (
-      LibraryLayout.width + 
-      GlobalConstants.PADDING + 
+    x:
+      LibraryLayout.width +
+      GlobalConstants.PADDING +
       MixerConstants.WIDTH +
-      GlobalConstants.PADDING
-    ),
+      GlobalConstants.PADDING,
     y: ControlsLayout.height + GlobalConstants.PADDING,
-    width: (
+    width:
       app.screen.width -
       LibraryLayout.width -
       GlobalConstants.PADDING -
       MixerConstants.WIDTH -
-      GlobalConstants.PADDING
-    ),
-    height: MinimapConstants.HEIGHT
+      GlobalConstants.PADDING,
+    height: MinimapConstants.HEIGHT,
   };
 
   const ScrubLayout: Layout = {
-    x: (
-      LibraryLayout.width + 
-      GlobalConstants.PADDING + 
-      MixerConstants.WIDTH +
-      GlobalConstants.PADDING
-    ),
-    y: (
-      ControlsLayout.height + 
+    x:
+      LibraryLayout.width +
       GlobalConstants.PADDING +
-      MinimapLayout.height + 
-      GlobalConstants.PADDING
-    ),
-    width: (
+      MixerConstants.WIDTH +
+      GlobalConstants.PADDING,
+    y:
+      ControlsLayout.height +
+      GlobalConstants.PADDING +
+      MinimapLayout.height +
+      GlobalConstants.PADDING,
+    width:
       app.screen.width -
       LibraryLayout.width -
       GlobalConstants.PADDING -
       MixerConstants.WIDTH -
-      GlobalConstants.PADDING
-    ),
-    height: ScrubConstants.HEIGHT
+      GlobalConstants.PADDING,
+    height: ScrubConstants.HEIGHT,
   };
 
   const MixerLayout: Layout = {
     x: LibraryLayout.width + GlobalConstants.PADDING,
-    y: (
-      ControlsLayout.height + 
+    y:
+      ControlsLayout.height +
       GlobalConstants.PADDING +
-      MinimapLayout.height + 
+      MinimapLayout.height +
       GlobalConstants.PADDING +
       ScrubLayout.height +
-      GlobalConstants.PADDING
-    ),
+      GlobalConstants.PADDING,
     width: MixerConstants.WIDTH,
-    height: (
+    height:
       app.screen.height -
-      ControlsLayout.height - 
+      ControlsLayout.height -
       GlobalConstants.PADDING -
-      MinimapLayout.height - 
+      MinimapLayout.height -
       GlobalConstants.PADDING -
       ScrubLayout.height -
       GlobalConstants.PADDING -
       GlobalConstants.PADDING -
-      ContextLayout.height
-    )
+      ContextLayout.height,
   };
 
   const WorkspaceLayout: Layout = {
-    x: (
-      LibraryLayout.width + 
+    x:
+      LibraryLayout.width +
       GlobalConstants.PADDING +
       MixerLayout.width +
-      GlobalConstants.PADDING
-    ),
-    y: (
-      ControlsLayout.height + 
+      GlobalConstants.PADDING,
+    y:
+      ControlsLayout.height +
       GlobalConstants.PADDING +
-      MinimapLayout.height + 
+      MinimapLayout.height +
       GlobalConstants.PADDING +
       ScrubLayout.height +
-      GlobalConstants.PADDING
-    ),
-    width: (
+      GlobalConstants.PADDING,
+    width:
       app.screen.width -
       LibraryLayout.width -
       GlobalConstants.PADDING -
       MixerLayout.width -
-      GlobalConstants.PADDING
-    ),
-    height: (
+      GlobalConstants.PADDING,
+    height:
       app.screen.height -
-      ControlsLayout.height - 
+      ControlsLayout.height -
       GlobalConstants.PADDING -
-      MinimapLayout.height - 
+      MinimapLayout.height -
       GlobalConstants.PADDING -
       ScrubLayout.height -
       GlobalConstants.PADDING -
       GlobalConstants.PADDING -
-      ContextLayout.height
-    )
+      ContextLayout.height,
   };
 
   dispatch(setWorkspaceLayout(WorkspaceLayout));

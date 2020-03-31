@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
 import { Stage } from 'react-pixi-fiber';
 import Colors from 'constants/Colors';
 
@@ -12,9 +12,9 @@ const STAGE_OPTIONS = {
   width: window.innerWidth,
   height: window.innerHeight,
   antialias: true,
-  resolution: (window.devicePixelRatio || 1),
+  resolution: window.devicePixelRatio || 1,
   autoResize: true,
-  backgroundColor: Colors.dark
+  backgroundColor: Colors.dark,
 };
 
 ReactDOM.render(

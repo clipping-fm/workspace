@@ -10,11 +10,11 @@ import { setViewportLeftPosition } from 'state/actions/workspaceActions';
 import { Layout } from 'types';
 
 export const ContextConstants = {
-  HEIGHT: 200
+  HEIGHT: 200,
 };
 
 type Props = {
-  layout: Layout 
+  layout: Layout;
 };
 
 export default React.memo(({ layout }: Props) => {
@@ -49,20 +49,18 @@ export default React.memo(({ layout }: Props) => {
       <Rectangle
         x={layout.x}
         y={layout.y}
-        width={layout.width} 
-        height={layout.height} 
+        width={layout.width}
+        height={layout.height}
         fill={Colors.mid}
       >
-      <Button
-        x={10}
-        y={10}
-        width={100} 
-        height={100} 
-        fill={Colors.light}
-        click={() => dispatch(
-          setViewportLeftPosition(5)
-        )}
-      />
+        <Button
+          x={10}
+          y={10}
+          width={100}
+          height={100}
+          fill={Colors.light}
+          click={() => dispatch(setViewportLeftPosition(5))}
+        />
       </Rectangle>
     </Container>
   );

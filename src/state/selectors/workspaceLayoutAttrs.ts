@@ -21,10 +21,15 @@ export const viewportWidthSecondsSelector = createSelector(
 export const projectEndsAtSecondsSelector = createSelector(
   (state: GlobalState) => state.project.midiPartInstances,
   (midiPartInstances: { [id: string]: MIDIPartInstance }) => {
-    const projectEndsAtSeconds = Object.values(midiPartInstances).reduce((acc: number, midiPartInstance: MIDIPartInstance) => {
-      const instanceEndsAt = Transport.toSeconds(midiPartInstance.time) + Transport.toSeconds(midiPartInstance.duration);
-      return instanceEndsAt > acc ? instanceEndsAt : acc;
-    }, 0);
+    const projectEndsAtSeconds = Object.values(midiPartInstances).reduce(
+      (acc: number, midiPartInstance: MIDIPartInstance) => {
+        const instanceEndsAt =
+          Transport.toSeconds(midiPartInstance.time) +
+          Transport.toSeconds(midiPartInstance.duration);
+        return instanceEndsAt > acc ? instanceEndsAt : acc;
+      },
+      0
+    );
     return projectEndsAtSeconds;
   }
 );

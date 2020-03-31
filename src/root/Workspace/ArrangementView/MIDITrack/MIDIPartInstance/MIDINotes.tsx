@@ -1,13 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Container } from 'react-pixi-fiber';
-import Rectangle from "shapes/Rectangle";
+import Rectangle from 'shapes/Rectangle';
 import { ProjectState } from 'state/reducers/project';
-import { GlobalState, MIDIPart, MIDIPartInstance, MIDINote, LoopedMIDINote } from "types";
-import { 
-  pxToSecondsSelector
-} from 'state/selectors/workspaceLayoutAttrs'; 
-import Colors from "constants/Colors";
+import {
+  GlobalState,
+  MIDIPart,
+  MIDIPartInstance,
+  MIDINote,
+  LoopedMIDINote,
+} from 'types';
+import { pxToSecondsSelector } from 'state/selectors/workspaceLayoutAttrs';
+import Colors from 'constants/Colors';
 import makeLoopedMIDINotes from 'utils/makeLoopedMIDINotes';
 
 type Props = {
@@ -27,19 +31,25 @@ const MIDINotes = ({
   midiPartInstanceDuration,
   midiPartInstanceOffset,
   midiPartDuration,
-  maxMIDIValue
+  maxMIDIValue,
 }: Props) => {
   const pxToSeconds: number = useSelector(pxToSecondsSelector);
-  const projectState: ProjectState = useSelector((state: GlobalState) => state.project);
-  const midiPartInstance: MIDIPartInstance = projectState.midiPartInstances[midiPartInstanceId];
-  const midiPart: MIDIPart = projectState.midiParts[midiPartInstance.midiPartId];
-  const midiNotes: MIDINote[] = midiPart.midiNoteIds.map(id => projectState.midiNotes[id]);
+  const projectState: ProjectState = useSelector(
+    (state: GlobalState) => state.project
+  );
+  const midiPartInstance: MIDIPartInstance =
+    projectState.midiPartInstances[midiPartInstanceId];
+  const midiPart: MIDIPart =
+    projectState.midiParts[midiPartInstance.midiPartId];
+  const midiNotes: MIDINote[] = midiPart.midiNoteIds.map(
+    (id) => projectState.midiNotes[id]
+  );
 
   const partNotes = makeLoopedMIDINotes(
     midiNotes,
     midiPartInstanceDuration,
     midiPartDuration,
-    midiPartInstanceOffset,
+    midiPartInstanceOffset
   ).map((loopedMIDINote: LoopedMIDINote) => {
     return (
       <Rectangle
@@ -52,12 +62,8 @@ const MIDINotes = ({
       />
     );
   });
-  
-  return( 
-    <Container y={noteContainerYpx}>
-      {partNotes}
-    </Container>
-  );
+
+  return <Container y={noteContainerYpx}>{partNotes}</Container>;
 };
 
 export default MIDINotes;

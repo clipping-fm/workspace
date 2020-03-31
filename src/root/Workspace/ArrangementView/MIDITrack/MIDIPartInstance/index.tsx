@@ -1,17 +1,15 @@
-import React from "react";
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { Container } from "react-pixi-fiber";
-import Rectangle from "shapes/Rectangle";
-import System from "constants/System";
-import Colors from "constants/Colors";
-import LoopStartIndicators from "./LoopStartIndicators";
-import DragHandle from "./DragHandle";
-import MIDINotes from "./MIDINotes";
-import { MIDIPartInstance } from "types";
+import { Container } from 'react-pixi-fiber';
+import Rectangle from 'shapes/Rectangle';
+import System from 'constants/System';
+import Colors from 'constants/Colors';
+import LoopStartIndicators from './LoopStartIndicators';
+import DragHandle from './DragHandle';
+import MIDINotes from './MIDINotes';
+import { MIDIPartInstance } from 'types';
 import normalizeTime from 'utils/normalizeTime';
-import { 
-  pxToSecondsSelector
-} from 'state/selectors/workspaceLayoutAttrs'; 
+import { pxToSecondsSelector } from 'state/selectors/workspaceLayoutAttrs';
 
 type Props = {
   midiPartInstance: MIDIPartInstance;
@@ -32,7 +30,9 @@ const MIDIPartInstanceComponent = ({
 }: Props) => {
   const pxToSeconds: number = useSelector(pxToSecondsSelector);
   const midiPartInstanceOffset: number = normalizeTime(midiPartInstance.offset);
-  const midiPartInstanceDuration: number = normalizeTime(midiPartInstance.duration);
+  const midiPartInstanceDuration: number = normalizeTime(
+    midiPartInstance.duration
+  );
   const instanceWidthPx: number = midiPartInstanceDuration / pxToSeconds;
 
   return (
@@ -41,7 +41,7 @@ const MIDIPartInstanceComponent = ({
       y={0}
       interactive
       cursor="pointer"
-      click={() => console.log("clicked instance")}
+      click={() => console.log('clicked instance')}
     >
       <Rectangle
         x={0}
@@ -59,7 +59,7 @@ const MIDIPartInstanceComponent = ({
         fill={Colors.mid}
         alpha={0.3}
       >
-        <MIDINotes 
+        <MIDINotes
           midiPartInstanceId={midiPartInstance.id}
           noteContainerYpx={noteContainerYpx}
           noteHeight={noteHeight}
@@ -67,7 +67,7 @@ const MIDIPartInstanceComponent = ({
           midiPartInstanceDuration={midiPartInstanceDuration}
           midiPartInstanceOffset={midiPartInstanceOffset}
           midiPartDuration={midiPartDuration}
-        /> 
+        />
       </Rectangle>
 
       <LoopStartIndicators

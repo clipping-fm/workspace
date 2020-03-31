@@ -3,7 +3,7 @@ import { AppContext as PIXIAppContext } from 'react-pixi-fiber';
 
 export function usePixiApp() {
   return useContext(PIXIAppContext);
-};
+}
 
 export function usePixiTicker(fn: any) {
   const { ticker } = usePixiApp();
@@ -13,5 +13,4 @@ export function usePixiTicker(fn: any) {
       ticker.remove(fn);
     };
   }, [fn, ticker]);
-};
-
+}

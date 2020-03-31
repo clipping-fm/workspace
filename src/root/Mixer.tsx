@@ -6,11 +6,11 @@ import Colors from 'constants/Colors';
 import { Layout } from 'types';
 
 export const MixerConstants = {
-  WIDTH: 100
+  WIDTH: 100,
 };
 
 type Props = {
-  layout: Layout 
+  layout: Layout;
 };
 
 export default React.memo(({ layout }: Props) => (
@@ -18,10 +18,9 @@ export default React.memo(({ layout }: Props) => (
     <Rectangle
       x={layout.x}
       y={layout.y}
-      width={layout.width} 
-      height={layout.height} 
+      width={layout.width}
+      height={layout.height}
       fill={Colors.mid}
-    >
-    </Rectangle>
+    ></Rectangle>
   </Container>
 ));
